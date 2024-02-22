@@ -323,11 +323,7 @@ mstringtoks mstrnctok(const mstring *s, const char *seps, long seps_n, long n)
     long curr_tok_len = 0;
     for (long i = 0; i < s->len; ++i)
     {
-        if (tok_count > n)
-        {
-            break;
-        }
-        if (!char_in_arr(s->cstr[i], seps, seps_n))
+        if (!char_in_arr(s->cstr[i], seps, seps_n) || tok_count >= n)
         {
             ++curr_tok_len;
             continue;
@@ -348,7 +344,7 @@ mstringtoks mstrnctok(const mstring *s, const char *seps, long seps_n, long n)
         }
     }
     // last token
-    if (curr_tok_len != 0 && tok_count < n)
+    if (curr_tok_len != 0)
     {
         mstring *tok = mstrslice(s, curr_tok_start, curr_tok_start + curr_tok_len);
         toks[tok_count] = tok;
