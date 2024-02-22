@@ -309,6 +309,55 @@ mstringtoks mstrctok(const mstring *s, const char *seps, long seps_n)
     return (mstringtoks) { tok_count, toks };
 }
 
+mstringtoks mstrnctok(const mstring *s, const char *seps, long seps_n, long n)
+{
+    if (s == NULL || seps == NULL)
+        return (mstringtoks) { 0, NULL };
+
+    long tok_count = min(ctokcount(s, seps, seps_n), n);
+    mstring **toks = malloc(sizeof(mstring*) * tok_count);
+    if (toks == NULL) return (mstringtoks) { 0, NULL };
+
+    tok_count = 0;
+    long curr_tok_start = 0;
+    long curr_tok_len = 0;
+    for (long i = 0; i < s->len; ++i)
+    {
+        if (tok_count > n)
+        {
+            break;
+        }
+        if (!char_in_arr(s->cstr[i], seps, seps_n))
+        {
+            ++curr_tok_len;
+            continue;
+        }
+        // found separator
+        if (curr_tok_len != 0)
+        {
+            mstring *tok = mstrslice(s, curr_tok_start, curr_tok_start + curr_tok_len);
+            toks[tok_count] = tok;
+            ++tok_count;
+            curr_tok_len = 0;
+            curr_tok_start = i + 1;
+        }
+        // if current token length is 0
+        else
+        {
+            curr_tok_start = i + 1;
+        }
+    }
+    // last token
+    if (curr_tok_len != 0 && tok_count < n)
+    {
+        mstring *tok = mstrslice(s, curr_tok_start, curr_tok_start + curr_tok_len);
+        toks[tok_count] = tok;
+        ++tok_count;
+    }
+
+    return (mstringtoks) { tok_count, toks };
+}
+
 mstringtoks mstrstok(const mstring *s, const mstring **seps, long seps_n)
 {
     if (s == NULL || seps == NULL)

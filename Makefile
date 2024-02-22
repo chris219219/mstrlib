@@ -13,3 +13,4 @@ test:
 clean:
 	rm -f mstr.o
 	rm -f libmstr.a
+	rm -f mstr.test

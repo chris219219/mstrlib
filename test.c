@@ -48,6 +48,14 @@ int main()
         printf("tok: %s\n", toks.toks[i]->cstr);
     }
 
+    printf("ntok\n");
+
+    mstringtoks toks2 = mstrnctok(s5, " a", 2, 2);
+    for (long i = 0; i < toks2.tok_count; ++i)
+    {
+        printf("tok: %s\n", toks2.toks[i]->cstr);
+    }
+
     free(s1);
     free(s2);
     free(sum);
@@ -58,6 +66,7 @@ int main()
     free(new_s2);
     free(s5);
     mstrfreetoks(toks);
+    mstrfreetoks(toks2);
 
     return EXIT_SUCCESS;
 }
