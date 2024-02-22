@@ -1,7 +1,7 @@
 ## mstrlib
 
 mstrlib stands for "modern string library". It helps C developers write higher
-level software without having to worry about too many of the intracacies of
+level software without having to worry about too many of the intricacies of
 strings in C.
 
 ## How to Build
