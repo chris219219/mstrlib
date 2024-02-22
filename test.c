@@ -34,11 +34,11 @@ int main()
     size_t smatches = mstrsmatch(s2, s3);
     printf("Testing smatch: %zu\n", smatches);
 
-    mstring *new_s1 = mstr("crate");
+    mstring *new_s1 = mstr("craaaaate");
     mstring *s4 = mstrrep(s2, s3, new_s1);
     printf("Testing rep: %s\n", s4->cstr);
 
-    mstring *new_s2 = mstr("crootooo");
+    mstring *new_s2 = mstr("cro");
     mstring *s5 = mstrnrep(s4, new_s1, new_s2, 1);
     printf("Testing rep: %s\n", s5->cstr);
 

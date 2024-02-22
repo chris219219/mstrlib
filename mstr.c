@@ -23,7 +23,7 @@ mstring *mstr(const char *cstr)
 {
     if (cstr == NULL) return NULL;
 
-    size_t cstr_size = strlen(cstr) + 1;
+    long cstr_size = strlen(cstr) + 1;
     mstring *s = malloc(sizeof(mstring) + cstr_size);
     if (s == NULL) return NULL;
 
@@ -63,19 +63,19 @@ bool mstrcmp(const mstring *s1, const mstring *s2)
 
     if (s1->len != s2->len) return false;
 
-    for (size_t i = 0; i < s1->len; ++i)
+    for (long i = 0; i < s1->len; ++i)
     {
         if (s1->cstr[i] != s2->cstr[i]) return false;
     }
     return true;
 }
 
-size_t mstrcmatch(const mstring *s, char match)
+long mstrcmatch(const mstring *s, char match)
 {
     if (s == NULL) return 0;
 
-    size_t matches = 0;
-    for (size_t i = 0; i < s->len; ++i)
+    long matches = 0;
+    for (long i = 0; i < s->len; ++i)
     {
         if (s->cstr[i] == match)
             ++matches;
@@ -83,13 +83,13 @@ size_t mstrcmatch(const mstring *s, char match)
     return matches;
 }
 
-size_t mstrsmatch(const mstring *s, const mstring *match)
+long mstrsmatch(const mstring *s, const mstring *match)
 {
     if (s == NULL || match == NULL) return 0;
 
-    size_t matches = 0;
-    size_t curr_match = 0;
-    for (size_t i = 0; i < s->len; ++i)
+    long matches = 0;
+    long curr_match = 0;
+    for (long i = 0; i < s->len; ++i)
     {
         if (s->cstr[i] != match->cstr[curr_match])
         {
@@ -111,16 +111,16 @@ mstring *mstrrep(const mstring *s, const mstring *old_s, const mstring *new_s)
 {
     if (s == NULL || old_s == NULL || new_s == NULL) return NULL;
 
-    size_t matches = mstrsmatch(s, old_s);
-    size_t new_len = s->len + (matches * (new_s->len - old_s->len));
+    long matches = mstrsmatch(s, old_s);
+    long new_len = s->len + (matches *(new_s->len - old_s->len));
     mstring *r = malloc(sizeof(mstring) + new_len + 1);
     if (r == NULL) return NULL;
-    
+
     r->len = new_len;
 
-    size_t new_i = 0;
-    size_t curr_match = 0;
-    for (size_t i = 0; i < s->len; ++i)
+    long new_i = 0;
+    long curr_match = 0;
+    for (long i = 0; i < s->len; ++i)
     {
         if (s->cstr[i] != old_s->cstr[curr_match])
         {
@@ -150,21 +150,21 @@ mstring *mstrrep(const mstring *s, const mstring *old_s, const mstring *new_s)
     return r;
 }
 
-mstring *mstrnrep(const mstring *s, const mstring *old_s, const mstring *new_s, size_t n)
+mstring *mstrnrep(const mstring *s, const mstring *old_s, const mstring *new_s, long n)
 {
     if (s == NULL || old_s == NULL || new_s == NULL) return NULL;
 
-    size_t matches = min(mstrsmatch(s, old_s), n);
-    size_t new_len = s->len + (matches * (new_s->len - old_s->len));
+    long matches = min(mstrsmatch(s, old_s), n);
+    long new_len = s->len + (matches * (new_s->len - old_s->len));
     mstring *r = malloc(sizeof(mstring) + new_len + 1);
     if (r == NULL) return NULL;
     
     r->len = new_len;
 
     matches = 0;
-    size_t new_i = 0;
-    size_t curr_match = 0;
-    for (size_t i = 0; i < s->len; ++i)
+    long new_i = 0;
+    long curr_match = 0;
+    for (long i = 0; i < s->len; ++i)
     {
         if (s->cstr[i] != old_s->cstr[curr_match] || matches >= n)
         {
@@ -195,11 +195,11 @@ mstring *mstrnrep(const mstring *s, const mstring *old_s, const mstring *new_s, 
     return r;
 }
 
-mstring *mstrpop(const mstring *s, size_t n)
+mstring *mstrpop(const mstring *s, long n)
 {
     if (s == NULL) return NULL;
 
-    size_t new_len = s->len - n;
+    long new_len = s->len - n;
     mstring *r = malloc(sizeof(mstring) + s->len - n + 1);
     if (r == NULL) return NULL;
 
@@ -210,9 +210,9 @@ mstring *mstrpop(const mstring *s, size_t n)
 }
 
 // helper function
-bool char_in_arr(char c, const char *arr, size_t arr_n)
+bool char_in_arr(char c, const char *arr, long arr_n)
 {
-    for (size_t i = 0; i < arr_n; ++i)
+    for (long i = 0; i < arr_n; ++i)
     {
         if (c != arr[i]) return false;
     }
@@ -220,7 +220,7 @@ bool char_in_arr(char c, const char *arr, size_t arr_n)
 }
 
 /*
-mstring **mstrctok(const mstring *s, const char *toks, size_t toks_len)
+mstring **mstrctok(const mstring *s, const char *toks, long toks_len)
 {
     if (s == NULL || toks == NULL)
         return NULL;
@@ -228,7 +228,7 @@ mstring **mstrctok(const mstring *s, const char *toks, size_t toks_len)
     // WIP
 }
 
-mstring **mstrstok(const mstring *s, const mstring **toks, size_t toks_len)
+mstring **mstrstok(const mstring *s, const mstring **toks, long toks_len)
 {
     if (s == NULL || toks == NULL)
         return NULL;
