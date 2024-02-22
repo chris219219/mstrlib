@@ -11,14 +11,21 @@ struct mstring
     char cstr[];
 };
 
+typedef struct mstringtoks mstringtoks;
+struct mstringtoks
+{
+    long tok_count;
+    mstring **toks;
+};
+
 // Creates a new mstring from a C style string.
 mstring *mstr(const char *cstr);
 
-// Compares two mstrings.
-bool mstrcmp(const mstring *s1, const mstring *s2);
-
 // Duplicates an mstring.
 mstring *mstrdup(const mstring *s);
+
+// Compares two mstrings.
+bool mstrcmp(const mstring *s1, const mstring *s2);
 
 // Adds two mstrings.
 mstring *mstradd(const mstring *s1, const mstring *s2);
@@ -38,7 +45,16 @@ mstring *mstrnrep(const mstring *s, const mstring *old_s, const mstring *new_s, 
 // Removes n characters from s.
 mstring *mstrpop(const mstring *s, long n);
 
-//mstring **mstrctok(const mstring *s, const char *toks, long tok_n);
-//mstring **mstrstok(const mstring *s, const mstring **toks, long tok_n);
+// Slices an mstring from start to end indexes, inclusive.
+mstring *mstrslice(const mstring *s, long start, long end);
+
+// Tokenizes s with a list of character separators.
+mstringtoks mstrctok(const mstring *s, const char *seps, long seps_n);
+
+// Tokenizes s with a list of mstring separators.
+//mstringtoks mstrstok(const mstring *s, const mstring **seps, long seps_n);
+
+// Frees an mstringtoks structure.
+void mstrfreetoks(mstringtoks toks);
 
 #endif

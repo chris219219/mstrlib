@@ -7,6 +7,9 @@ package: objects
 objects:
 	$(COMPILE) -c mstr.c
 
+test:
+	$(COMPILE) mstr.c test.c -o mstr.test
+
 clean:
 	rm -f mstr.o
 	rm -f libmstr.a

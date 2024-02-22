@@ -12,7 +12,7 @@ int main()
     mstring *s1 = mstr("create string");
     printf("Testing create: %s\n", s1->cstr);
 
-    mstring *s2 = mstr("create another create string");
+    mstring *s2 = mstr("create another create string create");
     printf("Test create: %s\n", s2->cstr);
 
     mstring *sum = mstradd(s1, s2);
@@ -42,6 +42,12 @@ int main()
     mstring *s5 = mstrnrep(s4, new_s1, new_s2, 1);
     printf("Testing rep: %s\n", s5->cstr);
 
+    mstringtoks toks = mstrctok(s5, " a", 2);
+    for (long i = 0; i < toks.tok_count; ++i)
+    {
+        printf("tok: %s\n", toks.toks[i]->cstr);
+    }
+
     free(s1);
     free(s2);
     free(sum);
@@ -51,6 +57,7 @@ int main()
     free(s4);
     free(new_s2);
     free(s5);
+    mstrfreetoks(toks);
 
     return EXIT_SUCCESS;
 }

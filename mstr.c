@@ -44,6 +44,20 @@ mstring *mstrdup(const mstring *s)
     return r;
 }
 
+bool mstrcmp(const mstring *s1, const mstring *s2)
+{
+    if (s1 == NULL && s2 == NULL) return true;
+    else if ((s1 == NULL) ^ (s2 == NULL)) return false;
+
+    if (s1->len != s2->len) return false;
+
+    for (long i = 0; i < s1->len; ++i)
+    {
+        if (s1->cstr[i] != s2->cstr[i]) return false;
+    }
+    return true;
+}
+
 mstring *mstradd(const mstring *s1, const mstring *s2)
 {
     if (s1 == NULL || s2 == NULL) return NULL;
@@ -55,19 +69,6 @@ mstring *mstradd(const mstring *s1, const mstring *s2)
     memcpy(r->cstr, s1->cstr, s1->len);
     memcpy(r->cstr + s1->len, s2->cstr, s2->len + 1);
     return r;
-}
-
-bool mstrcmp(const mstring *s1, const mstring *s2)
-{
-    if (s1 == NULL || s2 == NULL) return false;
-
-    if (s1->len != s2->len) return false;
-
-    for (long i = 0; i < s1->len; ++i)
-    {
-        if (s1->cstr[i] != s2->cstr[i]) return false;
-    }
-    return true;
 }
 
 long mstrcmatch(const mstring *s, char match)
@@ -197,7 +198,7 @@ mstring *mstrnrep(const mstring *s, const mstring *old_s, const mstring *new_s, 
 
 mstring *mstrpop(const mstring *s, long n)
 {
-    if (s == NULL) return NULL;
+    if (s == NULL || n < 0) return NULL;
 
     long new_len = s->len - n;
     mstring *r = malloc(sizeof(mstring) + s->len - n + 1);
@@ -209,30 +210,118 @@ mstring *mstrpop(const mstring *s, long n)
     return r;
 }
 
+mstring *mstrslice(const mstring *s, long start, long end)
+{
+    if (s == NULL || end <= start) return NULL;
+
+    long new_len = end - start;
+    mstring *r = malloc(sizeof(mstring) + new_len + 1);
+    if (r == NULL) return NULL;
+
+    r->len = new_len;
+    memcpy(r->cstr, s->cstr + start, new_len);
+    r->cstr[new_len] = '\0';
+    return r;
+}
+
 // helper function
 bool char_in_arr(char c, const char *arr, long arr_n)
 {
     for (long i = 0; i < arr_n; ++i)
     {
-        if (c != arr[i]) return false;
+        if (c == arr[i]) return true;
     }
-    return true;
+    return false;
 }
 
-/*
-mstring **mstrctok(const mstring *s, const char *toks, long toks_len)
+// helper function
+long ctokcount(const mstring *s, const char *seps, long seps_n)
 {
-    if (s == NULL || toks == NULL)
-        return NULL;
+    if (s == NULL || seps == NULL)
+        return 0;
 
-    // WIP
+    long tok_count = 0;
+    long curr_tok_len = 0;
+    for (long i = 0; i < s->len; ++i)
+    {
+        if (!char_in_arr(s->cstr[i], seps, seps_n))
+        {
+            ++curr_tok_len;
+            continue;
+        }
+        // found separator
+        if (curr_tok_len != 0)
+        {
+            ++tok_count;
+            curr_tok_len = 0;
+        }
+    }
+    // last token
+    if (curr_tok_len != 0)
+    {
+        ++tok_count;
+    }
+    return tok_count;
 }
 
-mstring **mstrstok(const mstring *s, const mstring **toks, long toks_len)
+mstringtoks mstrctok(const mstring *s, const char *seps, long seps_n)
 {
-    if (s == NULL || toks == NULL)
-        return NULL;
+    if (s == NULL || seps == NULL)
+        return (mstringtoks) { 0, NULL };
 
-    // WIP
+    long tok_count = ctokcount(s, seps, seps_n);
+    mstring **toks = malloc(sizeof(mstring*) * tok_count);
+    if (toks == NULL) return (mstringtoks) { 0, NULL };
+
+    tok_count = 0;
+    long curr_tok_start = 0;
+    long curr_tok_len = 0;
+    for (long i = 0; i < s->len; ++i)
+    {
+        if (!char_in_arr(s->cstr[i], seps, seps_n))
+        {
+            ++curr_tok_len;
+            continue;
+        }
+        // found separator
+        if (curr_tok_len != 0)
+        {
+            mstring *tok = mstrslice(s, curr_tok_start, curr_tok_start + curr_tok_len);
+            toks[tok_count] = tok;
+            ++tok_count;
+            curr_tok_len = 0;
+            curr_tok_start = i + 1;
+        }
+        // if current token length is 0
+        else
+        {
+            curr_tok_start = i + 1;
+        }
+    }
+    // last token
+    if (curr_tok_len != 0)
+    {
+        mstring *tok = mstrslice(s, curr_tok_start, curr_tok_start + curr_tok_len);
+        toks[tok_count] = tok;
+        ++tok_count;
+    }
+
+    return (mstringtoks) { tok_count, toks };
 }
-*/
+
+mstringtoks mstrstok(const mstring *s, const mstring **seps, long seps_n)
+{
+    if (s == NULL || seps == NULL)
+        return (mstringtoks) { 0, NULL };
+
+    return (mstringtoks) { 0, NULL };
+}
+
+void mstrfreetoks(mstringtoks toks)
+{
+    for (long i = 0; i < toks.tok_count; ++i)
+    {
+        free(toks.toks[i]);
+    }
+    free(toks.toks);
+}
