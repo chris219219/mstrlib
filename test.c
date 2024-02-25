@@ -50,7 +50,7 @@ int main()
 
     printf("ntok\n");
 
-    mstringtoks toks2 = mstrnctok(s5, " a", 2, 2);
+    mstringtoks toks2 = mstrnctok(s5, " a", 2, 3);
     for (long i = 0; i < toks2.tok_count; ++i)
     {
         printf("tok: %s\n", toks2.toks[i]->cstr);

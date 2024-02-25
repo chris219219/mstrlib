@@ -323,7 +323,7 @@ mstringtoks mstrnctok(const mstring *s, const char *seps, long seps_n, long n)
     long curr_tok_len = 0;
     for (long i = 0; i < s->len; ++i)
     {
-        if (!char_in_arr(s->cstr[i], seps, seps_n) || tok_count >= n)
+        if (!char_in_arr(s->cstr[i], seps, seps_n) || tok_count + 1 >= n)
         {
             ++curr_tok_len;
             continue;
